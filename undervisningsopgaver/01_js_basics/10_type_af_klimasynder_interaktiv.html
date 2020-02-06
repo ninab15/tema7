@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Din CO2 udledning</title>
+    <style>
+
+    </style>
+</head>
+
+<p>Hvor mange timer flyver du?</p>
+<input type="number" id="længde">
+<button>Udregn din CO2 udledning og kig i consolen</button>
+
+<body>
+    <script>
+        document.querySelector("button").addEventListener("click", buttonClicked);
+
+        function buttonClicked() {
+            let længde = document.querySelector("#længde").value;
+
+
+            let kgtime = 109;
+            let co2 = længde * kgtime;
+            let resultat = `Du har fløjet ${længde} timer, så du har udledt ${co2} CO2 på din rejse.`;
+
+            //        if (co2 < 100) { // resultat=`Du har fløjet ${længde} timer og udledt ${co2} CO2. Tæt på Thunberg`; // } // // if (co2>= 100 && co2 < 200) { // resultat=`Du har fløjet ${længde} timer og udledt ${co2} CO2. Jaja, du behøver ikke melde dig ud af Å`; // } // if (co2>= 200 && co2 < 600) { // resultat=`Du har fløjet ${længde} timer og udledt ${co2} CO2. Det er godt for turismen i nordeuropa`; // } // // if (co2>= 600) {
+            // resultat = `Du har fløjet ${længde} timer og udledt ${co2} CO2. Nå ja, vi kan jo altid kolonisere end anden planet`;
+            // }
+            console.log(resultat);
+        }
+    </script>
+</body></html>

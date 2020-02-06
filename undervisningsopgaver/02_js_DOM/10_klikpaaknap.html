@@ -33,28 +33,55 @@
     <button id="html">
         html
     </button>
-    <button id="slet">
+    <button id="flyt">
         flyt
     </button>
     <div id="box"></div>
     <div id="bax"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", start);
+        //        document.addEventListener("DOMContentLoaded", start);
+        //
+        //        function start() {
+        //            console.log("start");
+        //            let klik = document.querySelector("#klik");
+        //            let slet = document.querySelector("#slet");
+        //            let html = document.querySelector("#html");
+        //            let flyt = document.querySelector("#flyt");
+        //            let box = document.querySelector("#box");
+        //            let bax = document.querySelector("#bax");
+        //
+        //            klik.addEventListener("click", () => {
+        //                box.textContent = "Klik";
+        //            })
+        //        }
 
-        function start() {
-            console.log("start");
-            let klik = document.querySelector("#klik");
-            let slet = document.querySelector("#slet");
-            let html = document.querySelector("#html");
-            let flyt = document.querySelector("#flyt");
-            let box = document.querySelector("#box");
-            let bax = document.querySelector("#bax");
 
-            klik.addEventListener("click", () => {
-                box.textContent = "Klik";
-            })
 
-        }
+        let box = document.querySelector("#box");
+        let bax = document.querySelector("#bax");
+
+        /*viser KLIK i box*/
+        document.querySelector("#klik").addEventListener("click", () => {
+            box.textContent = ("KLIK");
+        })
+
+        /*sletter KLIK i box*/
+        document.querySelector("#slet").addEventListener("click", () => {
+            box.textContent = ("");
+
+        })
+
+        /*viser h2 og p i box*/
+        document.querySelector("#html").addEventListener("click", () => {
+            box.textContent = ("<h2>, <p>");
+        })
+
+        /*flytter h2 og p fra box til bax*/
+        document.querySelector("#flyt").addEventListener("click", () => {
+
+            bax.textContent = box.textContent;
+            box.textContent = boxSlet.textContent;
+        })
     </script>
 </body></html>
