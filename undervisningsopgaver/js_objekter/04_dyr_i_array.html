@@ -9,7 +9,14 @@
 </head>
 
 <body>
+    <article>
+        <p></p>
+        <img src="" alt="">
+    </article>
+
     <script>
+        document.addEventListener("DOMContentLoaded", start);
+
         let dyr = {
             "navn": "gris",
             "type": "pattedyr",
@@ -18,6 +25,16 @@
         }
         let resultat = `Dyr: ${dyr.navn}, type: ${dyr.type}, levested: ${dyr.levested}`;
         console.log(resultat);
+
+        function start() {
+            console.log("start");
+
+            let destination = document.querySelector("article");
+            let information = `Dyr: ${dyr.navn}, type: ${dyr.type}, levested: ${dyr.levested}`;
+            destination.querySelector("p").textContent = information;
+            destination.querySelector("img").src = dyr.billede;
+
+        }
 
     </script>
 </body>
