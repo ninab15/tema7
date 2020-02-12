@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05-fremhæv</title>
+    <link rel="stylesheet" href="">
+    <link href="https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        article {
+            border: 1px solid black;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 10px;
+            background: #ececec;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-column-gap: 10px;
+            grid-row-gap: 10px;
+        }
+
+        p,
+        h2 {
+            text-align: center;
+            font-family: 'Bebas Neue', cursive;
+        }
+
+        button {
+            border: 2px solid black;
+            background: white;
+            height: 60px;
+            width: 90px;
+
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+        }
+
+        .valgt {
+            color: red;
+        }
+
+        h1 {
+            display: flex;
+            justify-content: center;
+            font-family: 'Bebas Neue', cursive;
+        }
+
+
+
+        button:focus {
+            outline: 0;
+        }
+
+    </style>
+
+    <h1>Alle</h1>
+    <nav>
+        <button class="filter valgt" data-køn="alle">Alle</button>
+        <button class="filter" data-køn="m">Mænd</button>
+        <button class="filter" data-køn="k">Kvinder</button>
+        <button class="filter" data-køn="andet">Andet</button>
+
+    </nav>
+
+</head>
+
+
+
+<section class="data-container"></section>
+
+<template>
+    <article id="personer">
+        <h2></h2>
+        <img src="" alt="">
+        <p class="alder">Alder: </p>
+        <p class="hobby">Hobby: </p>
+        <p class="sex">Køn: </p>
+    </article>
+</template>
+
+
+<body>
+    <script>
+        // link til google sheet
+        const endpoint = "https://spreadsheets.google.com/feeds/list/1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0/od6/public/values?alt=json";
+        let personer = [];
+        let filter = "alle";
+
+        document.addEventListener("DOMContentLoaded", start);
+
+        function start() {
+            loadData();
+        }
+
+
+        async function loadData() {
+            // indhenter information fra linket, som er sat op i constanten "endpooint" ovenover
+            const response = await fetch(endpoint);
+            // sætter personer = json og venter på at filerne bliver hentet
+            personer = await response.json();
+            console.log(personer);
+            visPersoner();
+        }
+
+
+        function visPersoner() {
+            const container = document.querySelector(".data-container");
+            container.innerHTML = "";
+            const template = document.querySelector("template");
+
+            personer.feed.entry.forEach(person => {
+
+                if (filter == "alle" || filter == person.gsx$sex.$t) {
+                    let klon = template.cloneNode(true).content;
+                    klon.querySelector("h2").textContent = person.gsx$navn.$t;
+                    // plus er vigtigt her for at den ikke bare overskriver førnævnte, men tilføjer det efter... altså så der både står fornavn og efternavn og " " gør at der kommer mellemrum imellem
+                    klon.querySelector("h2").textContent += " " + person.gsx$efternavn.$t;
+                    klon.querySelector("img").src = person.gsx$billede.$t;
+                    klon.querySelector("img").alt = person.gsx$navn.$t;
+                    klon.querySelector(".alder").textContent += person.gsx$alder.$t;
+                    klon.querySelector(".hobby").textContent += person.gsx$hobby.$t;
+                    klon.querySelector(".sex").textContent += person.gsx$sex.$t;
+                    container.appendChild(klon);
+                    addEventListenersToButtons();
+
+                }
+            })
+        }
+
+
+
+        function addEventListenersToButtons() {
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.addEventListener("click", filtrering);
+            })
+        }
+
+
+        function filtrering() {
+            console.log("Filtrering");
+            document.querySelector("h1").textContent = this.textContent;
+            filter = this.dataset.køn;
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.classList.remove("valgt");
+            })
+
+            this.classList.add("valgt");
+            visPersoner();
+        }
+
+    </script>
+</body>
+
+</html>

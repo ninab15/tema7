@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Personliste</title>
+
+
+    <style>
+        .personer {
+            border: 2px solid black;
+            margin: 5px;
+            padding: 5px;
+            box-shadow: 5px 10px 18px #888888:
+        }
+
+
+
+        .dyr:first-child {
+            border: 4px solid blue;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            max-width: 1000px;
+            margin: 0 auto;
+            grid-gap: 10px;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        p,
+        h2 {
+            text-align: center;
+        }
+
+        .valgt {
+            background-color: hotpink;
+            color: white;
+        }
+
+
+        nav {
+            display: flex;
+            justify-content: center;
+            margin: 2rem;
+        }
+
+        button {
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 5px 10px #888888;
+
+        }
+
+        button:hover {
+            filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: hotpink;
+            text-transform: uppercase;
+        }
+
+        #detalje {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, .8);
+            overflow: scroll;
+        }
+
+
+        #detalje #luk {
+            position: fixed;
+            top: 0;
+            left: 0;
+            font-size: 4rem;
+            cursor: pointer;
+        }
+
+        #luk {
+            margin: 1em;
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+    <h1>Alle</h1>
+    <nav>
+        <button class="filter valgt" data-køn="alle">Alle</button>
+        <button class="filter" data-køn="m">Mænd</button>
+        <button class="filter" data-køn="k">Kvinder</button>
+        <button class="filter" data-køn="andet">Andet</button>
+        <button class="aldersFilter" data-alder_over="55">Vis dem over 55</button>
+
+    </nav>
+
+    <section class="container">
+        <template>
+
+            <article class="personer">
+                <h2></h2>
+                <img src="" alt="">
+                <p class="sex">Køn: </p>
+                <p class="alder">Alder: </p>
+                <p class="religion">Religion: </p>
+                <p class="hobby">Hobby: </p>
+                <p class="koeledyr">Kæledyr: </p>
+                <p class="job">Job: </p>
+                <p class="by">By: </p>
+            </article>
+        </template>
+    </section>
+
+
+
+    <main></main>
+
+    <script>
+        let personer = []
+        const endpoint = "https://spreadsheets.google.com/feeds/list/1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0/od6/public/values?alt=json";
+        let filter = "alle";
+        let filterAlder = 0;
+
+        const container = document.querySelector(".container");
+        const theTemplate = document.querySelector("template");
+        document.addEventListener("DOMContentLoaded", start);
+
+        const detalje = document.querySelector("#detalje");
+
+
+
+        function start() {
+            loadData();
+            //            visPersoner();
+            addEventListersToButtons();
+
+        }
+
+        async function loadData() {
+
+            const jsonData = await fetch(endpoint);
+            console.log(jsonData)
+
+            personer = await jsonData.json();
+            console.log(personer);
+            visPersoner();
+        }
+
+
+        function visPerson() {
+            container.innerHTML = "";
+
+            //løb listen igennem og indsæt data i en template
+
+            personer.feed.entry.forEach(person) => {
+                console.log(person);
+
+
+                if (person) {
+                    detalje.classList.remove("gem");
+                    detalje.querySelector("button").addEventListener("click", () => detalje.classList.add("gem"));
+                    console.log(person.gsx$navn.$t);
+                    detalje.querySelector("h1").textContent = person.gsx$navn.$t;
+                    detalje.querySelector("p").textContent = "Religion:" + person.gsx$religion.$t;
+                    detalje.querySelector("p + p").textContent = "Hobby:" + person.gsx$hobby.$t;
+                    detalje.querySelector("img").src = person.gsx$billede.$t;
+                    detalje.querySelector("img").alt = "Portræt af " + person.gsx$navn.$t;
+                }
+            }
+
+        }
+
+
+
+
+        function addEventListersToButtons() {
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.addEventListener("click", filtering);
+            })
+
+            document.querySelector(".aldersFilter").addEventListener("click", aldersFiltrering)
+        }
+
+        function filtering() {
+            console.log("filter");
+            filter = this.dataset.køn;
+
+            document.querySelector("h1").textContent = this.textContent;
+
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.classList.remove("valgt");
+            })
+
+            this.classList.add("valgt");
+
+            visPersoner();
+        }
+
+        function aldersFiltrering() {
+            console.log("alders filter");
+            if (filterAlder == 0) {
+                filterAlder = 55;
+                filterAlder = parseInt(this.dataset.alder_over);
+
+                this.classList.add("valgt");
+            } else {
+                filterAlder = 0;
+                this.classList.remove("valgt");
+            }
+            visPersoner();
+        }
+    </script>
+
+</body></html>

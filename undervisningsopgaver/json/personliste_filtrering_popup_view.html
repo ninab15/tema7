@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personliste Opgave</title>
+    <link rel="stylesheet" href="">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .datacontainer {
+            margin: 0 auto;
+
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 10px;
+            max-width: 1200px;
+        }
+
+        .personer {
+            border: solid 1px black;
+            padding: 10px;
+
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        #detalje {
+            position: fixed;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, .5);
+        }
+
+        #detalje button {
+            font-size: 2em;
+            margin: .5em;
+
+        }
+
+        #person {
+            margin: 3em;
+            padding: 2em;
+            background-color: white;
+        }
+
+        .skjul {
+            display: none;
+        }
+
+    </style>
+</head>
+
+<body>
+    <template>
+
+        <div class="personer">
+            <h2></h2>
+            <h3></h3>
+            <img src="" alt="">
+            <p class="alder"></p>
+            <p class="by"></p>
+
+        </div>
+
+    </template>
+
+
+    <section id="detalje" class="skjul">
+        <button>X</button>
+        <article id="person">
+            <h1>NAVN</h1>
+            <img src="" alt="">
+            <p>RELIGION</p>
+        </article>
+    </section>
+
+
+
+    <section class="datacontainer"></section>
+    <script>
+        document.addEventListener("DOMContentLoaded", start);
+        const endpoint = "https://spreadsheets.google.com/feeds/list/1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0/od6/public/values?alt=json";
+        let personer = []
+        //start
+        //hent data fra json
+        //funktion laves (visDyr)
+
+        function start() {
+            loadData();
+        }
+        async function loadData() {
+            const response = await fetch(endpoint);
+            console.log(response);
+            personer = await response.json();
+            console.log(personer);
+            visPersoner();
+        }
+
+
+        function visPersoner() {
+            const container = document.querySelector(".datacontainer");
+            const personerTemplate = document.querySelector("template");
+            personer.feed.entry.forEach(person => {
+                let klon = personerTemplate.cloneNode(true).content;
+
+                klon.querySelector("h2").textContent = person.gsx$navn.$t;
+                klon.querySelector("h3").textContent = person.gsx$efternavn.$t;
+                klon.querySelector("img").src = person.gsx$billede.$t;
+                klon.querySelector(".alder").textContent = "Alder " + person.gsx$alder.$t;
+                klon.querySelector(".by").textContent = "By " + person.gsx$by.$t
+                klon.querySelector("#person").addEventListener
+
+
+                container.appendChild(klon);
+            })
+        }
+        console.log(visPersoner);
+
+        //personer.forEach(person => {
+        //                person.gsx$navn.$t;
+        //                person.gsx$alder.$t;
+        //                person.gsx$alder.$t;
+        //                person.gsx$histore.$t;
+        //width 100% img
+
+        //        listevisning.innerHTML += `<p>${dyret.navn} ${dyret.type} ${dyret.levested} ${dyret.billede}</p>`;
+
+    </script>
+</body>
+
+</html>
