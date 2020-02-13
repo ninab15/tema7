@@ -141,6 +141,7 @@
         const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json&fbclid=IwAR3DEeWCniVr-HgR-GrUvund6eJ12FKphdPh0IhVyel7zd70nEQxZXFYFRc";
         let retter = [];
         let kategorier = "alle";
+        let filterKnap = document.querySelectorAll(".filter");
 
 
 
@@ -148,12 +149,16 @@
         document.addEventListener("DOMContentLoaded", start);
 
         function start() {
-            loadData();
-            addEventListenersToButtons();
+            getJson();
+
+
+            //            filterKnap.forEach(knap => {
+            //                knap.addEventListener("click", filtrering);
+            //            });
         }
 
 
-        async function loadData() {
+        async function getJson() {
             // indhenter information fra linket, som er sat op i constanten "endpooint" ovenover
             const response = await fetch(endpoint);
             // sætter personer = json og venter på at filerne bliver hentet
@@ -171,7 +176,7 @@
 
             retter.feed.entry.forEach(ret => {
 
-                if (kategorier == "alle" || mad == ret.gsx$kategori.$t) {
+                if (kategorier == "alle" || kategorier == ret.gsx$kategori.$t) {
                     let klon = template.cloneNode(true).content;
                     klon.querySelector("h2").textContent = ret.gsx$navn.$t;
                     // plus er vigtigt her for at den ikke bare overskriver førnævnte, men tilføjer det efter... altså så der både står fornavn og efternavn og " " gør at der kommer mellemrum imellem
@@ -190,7 +195,7 @@
 
 
         function addEventListenersToButtons() {
-            document.querySelectorAll(".filter").forEach(elm => {
+            filterKnap.forEach(elm => {
                 elm.addEventListener("click", filtrering);
             });
         }
@@ -199,14 +204,15 @@
         function filtrering() {
             console.log("Filtrering");
             document.querySelector(".oversigt h1").textContent = this.textContent;
-            filter = this.dataset.kategori;
-            visRetter();
-            document.querySelectorAll(".filter").forEach(elm => {
+            kategorier = this.dataset.kategori;
+
+            filterKnap.forEach(elm => {
                 elm.classList.remove("valgt");
+                kategorier = this.dataset.kategori;
             });
 
             this.classList.add("valgt");
-
+            visRetter();
         }
 
     </script>
