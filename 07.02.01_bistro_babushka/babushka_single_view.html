@@ -7,14 +7,17 @@
     <title>Single-view</title>
     <style>
         body {
-            background-color: #e8e8e8;
+            background-color: blanchedalmond;
         }
 
         #navcontainer {
             display: flex;
-            height: 130px;
-            width: auto;
-            background-color: coral;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 18vh;
+            width: 100vw;
+            background-color: blanchedalmond;
             justify-content: center;
             font-size: 2rem;
         }
@@ -39,11 +42,25 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 10px;
-
+            position: absolute;
+            top: 10vw;
+            left: 20vw;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-column-start: 2;
             grid-column-gap: 10px;
             grid-row-gap: 10px;
+            text-align: left;
+        }
+
+        h1 {
+            display: flex;
+            justify-content: center;
+            font-family: 'Bebas Neue', cursive;
+        }
+
+        .ret-beskrivelse p {
+            text-align: left;
         }
 
         p,
@@ -55,7 +72,7 @@
         button {
             border: none;
             margin-right: 10px;
-
+            background-color: blanchedalmond;
             height: 40px;
             width: 80px;
             cursor: pointer;
@@ -83,47 +100,13 @@
             border: 1px #f4913d solid;
         }
 
-        h1 {
-            display: flex;
-            justify-content: center;
-            font-family: 'Bebas Neue', cursive;
-        }
+
 
         button:focus {
             outline: 0;
         }
 
-        #detalje {
-            /*
-            overflow: scroll;
-            position: fixed;
-            width: 100vw;
-            height: 100%;
-            z-index: 10;
-            left: 0;
-            top: 0;
-*/
-        }
 
-        #ret-detalje {
-            /*
-            margin: 6em;
-            margin-top: 10%;
-            padding: 2em;
-            background-color: #fff;
-            display: flex;
-            flex-wrap: nowrap;
-            flex-direction: row;
-*/
-        }
-
-        .ret-beskrivelse {
-            /*
-            flex-basis: 50%;
-            flex-grow: 1;
-            padding-left: 15px;
-*/
-        }
 
         #detalje img {
             display: flex;
@@ -136,27 +119,20 @@
 
         #detalje button {
             position: fixed;
-            right: 8%;
-            font-size: 1rem;
+            right: 30vw;
+            font-size: 0.7rem;
             height: 35px;
             max-width: 175px;
             display: flex;
             justify-content: center;
             border: none;
 
-            background-color: #333;
+            background-color: black;
             cursor: pointer;
             color: #fff;
             transition: .3s;
         }
 
-        #detalje button:hover {
-            height: 35px;
-            max-width: 175px;
-            background-color: white;
-            color: #333;
-            border: 2px #333 solid;
-        }
 
         .skjul {
             display: none;
@@ -164,6 +140,16 @@
 
         #detalje button:focus {
             outline: 0;
+        }
+
+        footer {
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            width: 100vw;
+            text-align: center;
+            display: flex;
+            justify-content: center;
         }
 
     </style>
@@ -178,16 +164,7 @@
         <h1>Vores menu</h1>
     </div>
 
-    <!--
-    <nav>
-        <p><i>filtrer efter: </i></p>
-        <button class="filter valgt" data-kategori="alle">Alle</button>
-        <button class="filter" data-kategori="forretter">Forretter</button>
-        <button class="filter" data-kategori="hovedretter">Hovedretter</button>
-        <button class="filter" data-kategori="desserter">Desserter</button>
-        <button class="filter" data-kategori="drikkevarer">Drikkevarer</button>
-    </nav>
--->
+
 
 
 
