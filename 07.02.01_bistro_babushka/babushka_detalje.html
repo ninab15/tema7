@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bistro Babushka</title>
+    <link rel="stylesheet" href="">
+    <link href="https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #e8e8e8;
+        }
+
+
+        article {
+            margin: 10px;
+            height: 450px;
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.15);
+            background-color: white;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        #splash {
+            background-image: url(imgs/large/bochkarev.jpg);
+            height: 50vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -10;
+        }
+
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-column-gap: 10px;
+            grid-row-gap: 10px;
+        }
+
+        p,
+        h2 {
+            text-align: center;
+            font-family: 'Bebas Neue', cursive;
+        }
+
+        button {
+            border: 1px white solid;
+            background: white;
+            height: 40px;
+            width: 90px;
+            margin-left: 3rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            background-color: #f4913d;
+            border: 1px #f4913d solid;
+        }
+
+        nav {
+            display: flex;
+            justify-content: flex-start;
+            position: absolute;
+        }
+
+        .valgt {
+            background-color: #f4913d;
+            border: 1px #f4913d solid;
+        }
+
+        h1 {
+            display: flex;
+            justify-content: center;
+            font-family: 'Bebas Neue', cursive;
+        }
+
+
+
+        button:focus {
+            outline: 0;
+        }
+
+    </style>
+
+
+    <h1>Menu</h1>
+    <nav>
+        <button class="filter valgt" data-ret="alle">Alle</button>
+        <button class="filter" data-ret="forretter">Forretter</button>
+        <button class="filter" data-ret="hovedretter">Hovedretter</button>
+        <button class="filter" data-ret="desserter">Desserter</button>
+        <button class="filter" data-ret="drikkevarer">Drikkevarer</button>
+    </nav>
+
+</head>
+
+<section id="splash"></section>
+
+<div class="popup">
+
+</div>
+
+<section class="data-container"></section>
+
+<template>
+    <article id="retter">
+        <h2></h2>
+        <img src="" alt="">
+        <p class="indhold">indhold: </p>
+        <p class="pris"> </p>
+    </article>
+</template>
+
+
+<body>
+    <script>
+        // link til google sheet
+        const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json&fbclid=IwAR3DEeWCniVr-HgR-GrUvund6eJ12FKphdPh0IhVyel7zd70nEQxZXFYFRc";
+        let mad = [];
+        let kategorier = "alle";
+
+
+
+
+        document.addEventListener("DOMContentLoaded", start);
+
+        function start() {
+            loadData();
+        }
+
+
+        async function loadData() {
+            // indhenter information fra linket, som er sat op i constanten "endpooint" ovenover
+            const response = await fetch(endpoint);
+            // sætter personer = json og venter på at filerne bliver hentet
+            mad = await response.json();
+            console.log(mad);
+            visMad();
+        }
+
+
+        function visMad() {
+            const container = document.querySelector(".data-container");
+            container.innerHTML = "";
+            const template = document.querySelector("template");
+
+            mad.feed.entry.forEach(ret => {
+
+                if (kategorier == "alle" || mad == ret.gsx$kategori.$t) {
+                    let klon = template.cloneNode(true).content;
+                    klon.querySelector("h2").textContent = ret.gsx$navn.$t;
+                    // plus er vigtigt her for at den ikke bare overskriver førnævnte, men tilføjer det efter... altså så der både står fornavn og efternavn og " " gør at der kommer mellemrum imellem
+
+                    klon.querySelector("img").src = `imgs/large/${ret.gsx$billede.$t}.jpg`;
+                    klon.querySelector("img").alt = ret.gsx$navn.$t;
+                    //                    klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
+                    klon.querySelector(".indhold").textContent = ret.gsx$kort.$t;
+                    klon.querySelector(".pris").textContent = ret.gsx$pris.$t + " Kr.";
+
+                    klon.querySelector(".retter").addEventListener("click", () => {
+                        location.href = "single.html?id" + ret.gsx$id.$t;
+                    })
+                    container.appendChild(klon);
+                    addEventListenersToButtons();
+
+                }
+            })
+        }
+
+
+        function addEventListenersToButtons() {
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.addEventListener("click", filtrering);
+            })
+        }
+
+
+        function filtrering() {
+            console.log("Filtrering");
+            document.querySelector("h1").textContent = this.textContent;
+            filter = this.dataset.kategori;
+            document.querySelectorAll(".filter").forEach(elm => {
+                elm.classList.remove("valgt");
+            })
+
+            this.classList.add("valgt");
+            visMad();
+        }
+
+    </script>
+</body>
+
+</html>
