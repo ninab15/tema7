@@ -4,97 +4,43 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Single-view</title>
+    <title>07.02.01 Bistro Babushka new-page</title>
+    <link rel="stylesheet" href="">
+
     <style>
-        body {
-            background-color: #e8e8e8;
-        }
-
-        #navcontainer {
-            display: flex;
-            height: 130px;
-            width: auto;
-            background-color: coral;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        article {
-            margin: 10px;
-            height: 400px;
-
-
-            cursor: pointer;
-        }
+        @import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,700,700i&display=swap');
 
         * {
             box-sizing: border-box;
         }
 
+        body {
+            margin: 0;
+        }
+
         img {
-            width: 100%;
+            object-fit: cover;
+            max-width: 100%;
         }
 
-        section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 10px;
-
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-column-gap: 10px;
-            grid-row-gap: 10px;
-        }
-
+        h1,
+        h2,
+        h3,
         p,
-        h2 {
-            text-align: center;
-            font-family: 'Bebas Neue', cursive;
+        a {
+            font-family: 'Roboto', sans-serif;
         }
 
-        button {
-            border: none;
-            margin-right: 10px;
-
-            height: 40px;
-            width: 80px;
-            cursor: pointer;
-
+        p {
+            font-weight: 300;
         }
 
-        button:last-child {
-            margin-right: 170px;
-        }
-
-        button:hover {
-            transform: scale(1.1);
-            background-color: #f4913d;
-            border: 1px #f4913d solid;
-        }
-
-        nav {
-            display: flex;
-            justify-content: flex-end;
-
-        }
-
-        .valgt {
-            background-color: #f4913d;
-            border: 1px #f4913d solid;
-        }
-
-        h1 {
-            display: flex;
-            justify-content: center;
-            font-family: 'Bebas Neue', cursive;
-        }
 
         button:focus {
             outline: 0;
         }
 
         #detalje {
-            /*
             overflow: scroll;
             position: fixed;
             width: 100vw;
@@ -102,11 +48,9 @@
             z-index: 10;
             left: 0;
             top: 0;
-*/
         }
 
         #ret-detalje {
-            /*
             margin: 6em;
             margin-top: 10%;
             padding: 2em;
@@ -114,15 +58,12 @@
             display: flex;
             flex-wrap: nowrap;
             flex-direction: row;
-*/
         }
 
         .ret-beskrivelse {
-            /*
             flex-basis: 50%;
             flex-grow: 1;
             padding-left: 15px;
-*/
         }
 
         #detalje img {
@@ -166,30 +107,45 @@
             outline: 0;
         }
 
+
+        /******* HEADER & FOOTER INDSTILLINGER *******/
+        header {
+            margin-bottom: 75px;
+            width: 100%;
+            height: 100px;
+            text-align: center;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+
+        footer {
+            bottom: 0;
+            position: absolute;
+            width: 100%;
+            height: 75px;
+            text-align: center;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        /******* HEADER & FOOTER INDSTILLINGER SLUT *******/
+
     </style>
 </head>
 
 <body>
-
-    <header id="navcontainer">
-        <h1>Bistro Babushka</h1>
+    <header>
+        <h1>BISTRO BABUSHKA</h1>
     </header>
-    <div class="oversigt">
-        <h1>Vores menu</h1>
-    </div>
-
-    <!--
-    <nav>
-        <p><i>filtrer efter: </i></p>
-        <button class="filter valgt" data-kategori="alle">Alle</button>
-        <button class="filter" data-kategori="forretter">Forretter</button>
-        <button class="filter" data-kategori="hovedretter">Hovedretter</button>
-        <button class="filter" data-kategori="desserter">Desserter</button>
-        <button class="filter" data-kategori="drikkevarer">Drikkevarer</button>
-    </nav>
--->
-
-
 
     <section id="detalje" class="skjul">
         <article id="ret-detalje">
@@ -210,8 +166,6 @@
     </footer>
 
 
-
-
     <script>
         const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json";
         const detalje = document.querySelector("#detalje");
@@ -220,24 +174,22 @@
 
         let retter = [];
         document.addEventListener("DOMContentLoaded", start);
-        document.addEventListener("DOMContentLoaded", start);
+
 
         function start() {
-            getJson();
+            hentData();
         }
 
-        async function getJson() {
-            const jsonData = await fetch(endpoint);
-            retter = await jsonData.json();
+        async function hentData() {
+            const response = await fetch(endpoint);
+            retter = await response.json();
             console.log(retter);
             visRetter();
         }
 
         function visRetter() {
             retter.feed.entry.forEach(ret => {
-
                 if (ret.gsx$id.$t == id) {
-                    console.log(ret);
                     document.title = "Restaurent Babushka - " + ret.gsx$navn.$t;
 
                     detalje.classList.remove("skjul");
@@ -256,6 +208,7 @@
                     });
                 }
             });
+
         }
 
     </script>
