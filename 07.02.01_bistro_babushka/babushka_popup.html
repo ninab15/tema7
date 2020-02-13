@@ -96,6 +96,57 @@
             outline: 0;
         }
 
+        /*----POPUP INDSTILLINGER----*/
+
+
+        #detalje {
+
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, .5);
+            z-index: 10;
+            left: 0;
+            top: 0;
+        }
+
+        #ret-detalje {
+            height: auto;
+            background-color: white;
+
+        }
+
+
+        .ret-beskrivelse {
+            flex-basis: 50%;
+            flex-grow: 1;
+            padding-left: 15px;
+        }
+
+
+
+        #detalje button {
+            position: absolute;
+            right: 8%;
+            font-size: 1.5rem;
+            max-height: 30px;
+            max-width: 30px;
+            display: flex;
+            justify-content: center;
+            border: none;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .skjul {
+            display: none;
+        }
+
+        #detalje button:focus {
+            outline: 0;
+        }
+
+        /*----POPUP INDSTILLINGER SLUT----*/
     </style>
 
 
@@ -119,13 +170,26 @@
 </head>
 
 
+<section id="detalje" class="skjul">
+    <article id="ret-detalje">
+        <button id="fjern-detalje">X</button>
+        <img src="" alt="">
+        <div class="ret-beskrivelse">
+            <h1></h1>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+        </div>
 
+    </article>
+</section>
 
 
 <section class="data-container"></section>
 
 <template>
-    <article id="retter">
+    <article class="retter">
 
         <img src="" alt="">
         <h2></h2>
@@ -139,6 +203,8 @@
     <script>
         // link til google sheet
         const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json&fbclid=IwAR3DEeWCniVr-HgR-GrUvund6eJ12FKphdPh0IhVyel7zd70nEQxZXFYFRc";
+        const detalje = document.querySelector("#detalje");
+
         let retter = [];
         let kategorier = "alle";
         let filterKnap = document.querySelectorAll(".filter");
@@ -151,10 +217,6 @@
         function start() {
             getJson();
 
-
-            //            filterKnap.forEach(knap => {
-            //                knap.addEventListener("click", filtrering);
-            //            });
         }
 
 
@@ -186,18 +248,38 @@
                     //                    klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
                     klon.querySelector(".indhold").textContent = ret.gsx$kort.$t;
                     klon.querySelector(".pris").textContent = ret.gsx$pris.$t + " Kr.";
-                    container.appendChild(klon);
-                    addEventListenersToButtons();
 
+                    klon.querySelector(".retter").addEventListener("click", () => visDetalje(ret));
+                    container.appendChild(klon);
+                                        addEventListenersToButtons();
                 }
             })
         }
+
+        function visDetalje(ret) {
+            detalje.classList.remove("skjul");
+            detalje.querySelector("#fjern-detalje").addEventListener("click", () =>
+                detalje.classList.add("skjul"));
+
+
+            console.log(ret.gsx$navn.$t);
+
+            detalje.querySelector("h1").textContent = ret.gsx$navn.$t;
+            detalje.querySelector("p").textContent = "Oprindelse: " + ret.gsx$oprindelse.$t;
+            detalje.querySelector("p + p").textContent = "Kategori: " + ret.gsx$kategori.$t;
+            detalje.querySelector("p + p + p").textContent = ret.gsx$lang.$t;
+            detalje.querySelector("p:last-child").textContent = "Pris: " + ret.gsx$pris.$t + ",-";
+            detalje.querySelector("img").src = `imgs/large/${ret.gsx$billede.$t}.jpg`;
+            detalje.querySelector("img").alt = "Retten: " + ret.gsx$navn.$t;
+        }
+
+
 
 
         function addEventListenersToButtons() {
             filterKnap.forEach(elm => {
                 elm.addEventListener("click", filtrering);
-            });
+            })
         }
 
 
@@ -208,14 +290,11 @@
 
             filterKnap.forEach(elm => {
                 elm.classList.remove("valgt");
-                kategorier = this.dataset.kategori;
-            });
+
+            })
 
             this.classList.add("valgt");
             visRetter();
         }
-
     </script>
-</body>
-
-</html>
+</body></html>
