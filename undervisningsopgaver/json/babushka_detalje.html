@@ -13,21 +13,12 @@
             background-color: #e8e8e8;
         }
 
-        #navcontainer {
-            display: flex;
-            height: 130px;
-            width: auto;
-            background-color: coral;
-            justify-content: center;
-            font-size: 2rem;
-        }
 
         article {
             margin: 10px;
-            height: 400px;
-
-
-            cursor: pointer;
+            height: 450px;
+            box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.15);
+            background-color: white;
         }
 
         * {
@@ -36,6 +27,16 @@
 
         img {
             width: 100%;
+        }
+
+        #splash {
+            background-image: url(imgs/large/bochkarev.jpg);
+            height: 50vh;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -10;
         }
 
         section {
@@ -56,17 +57,14 @@
         }
 
         button {
-            border: none;
-            margin-right: 10px;
-
+            border: 1px white solid;
+            background: white;
             height: 40px;
-            width: 80px;
+            width: 90px;
+            margin-left: 3rem;
+            margin-bottom: 1rem;
             cursor: pointer;
 
-        }
-
-        button:last-child {
-            margin-right: 170px;
         }
 
         button:hover {
@@ -77,8 +75,8 @@
 
         nav {
             display: flex;
-            justify-content: flex-end;
-
+            justify-content: flex-start;
+            position: absolute;
         }
 
         .valgt {
@@ -92,6 +90,8 @@
             font-family: 'Bebas Neue', cursive;
         }
 
+
+
         button:focus {
             outline: 0;
         }
@@ -99,36 +99,29 @@
     </style>
 
 
-
-
-    <div id="navcontainer">
-        <h1>Bistro Babushka</h1>
-    </div>
-    <div class="oversigt">
-        <h1>Menu</h1>
-    </div>
-
+    <h1>Menu</h1>
     <nav>
-        <button class="filter valgt" data-kategori="alle">Alle</button>
-        <button class="filter" data-kategori="forretter">Forretter</button>
-        <button class="filter" data-kategori="hovedretter">Hovedretter</button>
-        <button class="filter" data-kategori="desserter">Desserter</button>
-        <button class="filter" data-kategori="drikkevarer">Drikkevarer</button>
+        <button class="filter valgt" data-ret="alle">Alle</button>
+        <button class="filter" data-ret="forretter">Forretter</button>
+        <button class="filter" data-ret="hovedretter">Hovedretter</button>
+        <button class="filter" data-ret="desserter">Desserter</button>
+        <button class="filter" data-ret="drikkevarer">Drikkevarer</button>
     </nav>
 
 </head>
 
+<section id="splash"></section>
 
+<div class="popup">
 
-
+</div>
 
 <section class="data-container"></section>
 
 <template>
     <article id="retter">
-
-        <img src="" alt="">
         <h2></h2>
+        <img src="" alt="">
         <p class="indhold">indhold: </p>
         <p class="pris"> </p>
     </article>
@@ -139,7 +132,7 @@
     <script>
         // link til google sheet
         const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json&fbclid=IwAR3DEeWCniVr-HgR-GrUvund6eJ12FKphdPh0IhVyel7zd70nEQxZXFYFRc";
-        let retter = [];
+        let mad = [];
         let kategorier = "alle";
 
 
@@ -149,7 +142,6 @@
 
         function start() {
             loadData();
-            addEventListenersToButtons();
         }
 
 
@@ -157,30 +149,33 @@
             // indhenter information fra linket, som er sat op i constanten "endpooint" ovenover
             const response = await fetch(endpoint);
             // sætter personer = json og venter på at filerne bliver hentet
-            retter = await response.json();
-            console.log(retter);
-            visRetter();
-
+            mad = await response.json();
+            console.log(mad);
+            visMad();
         }
 
 
-        function visRetter() {
+        function visMad() {
             const container = document.querySelector(".data-container");
             container.innerHTML = "";
             const template = document.querySelector("template");
 
-            retter.feed.entry.forEach(ret => {
+            mad.feed.entry.forEach(ret => {
 
                 if (kategorier == "alle" || mad == ret.gsx$kategori.$t) {
                     let klon = template.cloneNode(true).content;
                     klon.querySelector("h2").textContent = ret.gsx$navn.$t;
                     // plus er vigtigt her for at den ikke bare overskriver førnævnte, men tilføjer det efter... altså så der både står fornavn og efternavn og " " gør at der kommer mellemrum imellem
 
-                    klon.querySelector("img").src = `imgs/small/${ret.gsx$billede.$t}-sm.jpg`;
+                    klon.querySelector("img").src = `imgs/large/${ret.gsx$billede.$t}.jpg`;
                     klon.querySelector("img").alt = ret.gsx$navn.$t;
                     //                    klon.querySelector(".navn").textContent = ret.gsx$navn.$t;
                     klon.querySelector(".indhold").textContent = ret.gsx$kort.$t;
                     klon.querySelector(".pris").textContent = ret.gsx$pris.$t + " Kr.";
+
+                    klon.querySelector(".retter").addEventListener("click", () => {
+                        location.href = "single.html?id" + ret.gsx$id.$t;
+                    })
                     container.appendChild(klon);
                     addEventListenersToButtons();
 
@@ -192,21 +187,20 @@
         function addEventListenersToButtons() {
             document.querySelectorAll(".filter").forEach(elm => {
                 elm.addEventListener("click", filtrering);
-            });
+            })
         }
 
 
         function filtrering() {
             console.log("Filtrering");
-            document.querySelector(".oversigt h1").textContent = this.textContent;
+            document.querySelector("h1").textContent = this.textContent;
             filter = this.dataset.kategori;
-            visRetter();
             document.querySelectorAll(".filter").forEach(elm => {
                 elm.classList.remove("valgt");
-            });
+            })
 
             this.classList.add("valgt");
-
+            visMad();
         }
 
     </script>
